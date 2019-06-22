@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shopping_cart/cart.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,16 +26,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  var cart = {};
 
-  void _incrementCounter() {
+  void _addToCart(int index) {
     setState(() {
-      _counter++;
+      if (cart.containsKey(index)) {
+        cart[index] += 1;
+      } else {
+        cart[index] = 1;
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    int totalCount = 0;
+    if(cart.length > 0){
+      totalCount = cart.values.reduce((a, b) => a + b);
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -46,7 +54,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 150.0,
                 width: 30.0,
                 child: new GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CartPage(cart: cart)),
+                    );
+                  },
                   child: new Stack(
                     children: <Widget>[
                       new IconButton(
@@ -66,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               right: 7,
                               child: new Center(
                                 child: new Text(
-                                  '$_counter',
+                                  '$totalCount',
                                   style: new TextStyle(
                                       color: Colors.white,
                                       fontSize: 12.0,
@@ -86,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: List.generate(6, (index) {
           return GestureDetector(
               onTap: () {
-                _incrementCounter();
+                _addToCart(index);
               },
               child: Container(
                 height: 200,
