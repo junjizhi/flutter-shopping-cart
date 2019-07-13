@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shopping_cart/cart.dart';
+import 'package:flutter_shopping_cart/cart_page.dart';
+import 'cart_bloc.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Shopping Cart Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Gift Shop'),
-    );
+    return ChangeNotifierProvider<CartBloc>(
+        builder: (context) => CartBloc(),
+        child: MaterialApp(
+          title: 'Flutter Shopping Cart Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: MyHomePage(title: 'Gift Shop'),
+        ));
   }
 }
 
@@ -26,23 +30,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var cart = {};
-
-  void _addToCart(int index) {
-    setState(() {
-      if (cart.containsKey(index)) {
-        cart[index] += 1;
-      } else {
-        cart[index] = 1;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    var bloc = Provider.of<CartBloc>(context);
     int totalCount = 0;
-    if(cart.length > 0){
-      totalCount = cart.values.reduce((a, b) => a + b);
+    if (bloc.cart.length > 0) {
+      totalCount = bloc.cart.values.reduce((a, b) => a + b);
     }
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => CartPage(cart: cart)),
+                        builder: (context) => CartPage(),
+                      ),
                     );
                   },
                   child: new Stack(
@@ -100,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: List.generate(6, (index) {
           return GestureDetector(
               onTap: () {
-                _addToCart(index);
+                bloc.addToCart(index);
               },
               child: Container(
                 height: 200,

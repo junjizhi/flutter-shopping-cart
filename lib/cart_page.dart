@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shopping_cart/cart_bloc.dart';
+import 'package:provider/provider.dart';
 
 class CartPage extends StatelessWidget {
-  CartPage({Key key, this.cart}) : super(key: key);
-
-  final cart;
+  CartPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var bloc = Provider.of<CartBloc>(context);
+    var cart = bloc.cart;
     return Scaffold(
       appBar: AppBar(
         title: Text("Shopping Cart"),
@@ -35,7 +37,7 @@ class CartPage extends StatelessWidget {
               elevation: 1.0,
               splashColor: Colors.blueGrey,
               onPressed: () {
-                // Perform some action
+                bloc.clear(giftIndex);
               },
             ),
           );
